@@ -4,24 +4,36 @@ import SearchBar from "./components/searchbar";
 import YTSearch from "youtube-api-search";
 import VideoList from "./components/videolist";
 import VideoDetail from "./components/video_detail";
-const API_KEY = "AIzaSyCY6Tz3rV2xq4NQgCoGDk3zM4iBtB5bjRQ";
+const API_KEY = "AIzaSyC302fABTdIDT2SBD7hdf2avEexSsa38wQ";
 
 
 
 class App extends Component {
   constructor(props){
     super(props);
-    this.state={ videos : [] };
-    YTSearch({ key: API_KEY, term: "johny harris" },  (videos) => {
-      this.setState( {videos} );
+    this.state={
+      videos : [],
+      selectedVideo : null 
+    };
+    this.videoSearch('');
+  }
+  videoSearch(term){
+    YTSearch({ key: API_KEY, term: term },  (videos) => {
+      this.setState( {
+        videos:videos,
+        selectedVideo:videos[0]
+      } );
     });
   }
+
   render() {
     return (
       <div>
-        <SearchBar />
-        <VideoDetail video={this.state.videos[0]} />
-        <VideoList videos={this.state.videos} />
+        <SearchBar onSearched ={Term=> this.videoSearch(Term)}/>
+        <VideoDetail video={this.state.selectedVideo} />
+        <VideoList 
+        videos={this.state.videos} 
+        onVideoSelected={(selectedVideo)=> this.setState({selectedVideo})} />
       </div>
     );
   }
